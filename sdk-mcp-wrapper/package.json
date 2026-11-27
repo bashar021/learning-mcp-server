@@ -1,21 +1,26 @@
 {
   "name": "weather-server",
   "version": "1.0.0",
-  "description": "A small weather HTTP server with 5 endpoints, backed by the free Open-Meteo API",
+  "description": "A small weather HTTP server (5 endpoints) plus a hand-written MCP server that wraps it",
   "type": "module",
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "tsx watch src/index.ts"
+    "dev": "tsx watch src/index.ts",
+    "mcp": "node dist/mcp-server.js",
+    "mcp:dev": "tsx src/mcp-server.ts"
   },
   "keywords": [
     "weather",
     "express",
+    "mcp",
     "open-meteo"
   ],
   "license": "MIT",
   "dependencies": {
-    "express": "^4.21.1"
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "express": "^4.21.1",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",

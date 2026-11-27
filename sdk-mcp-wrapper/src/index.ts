@@ -12,7 +12,7 @@
  *   GET /air-quality?lat=19.07&lon=72.88
  */
 
-import express, { Request, Response } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import {
   geocode,
   currentWeather,
@@ -21,9 +21,26 @@ import {
   airQuality,
   describeWeatherCode,
 } from "./open-meteo.js";
+import { logEvent } from "./logger.js";
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
+
+// Log every request: method, path, query, status, and duration.
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const start = Date.now();
+  res.on("finish", () => {
+    logEvent({
+      source: "rest-api",
+      method: req.method,
+      path: req.path,
+      query: req.query,
+      status: res.statusCode,
+      ms: Date.now() - start,
+    });
+  });
+  next();
+});
 
 /** Read a required number query param, or throw a 400-style error. */
 function num(value: unknown, name: string): number {
